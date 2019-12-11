@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Load and repetitions for resistance training</title>
+    <link type="text/css" rel="stylesheet" href="resistancetraining.css">
+    <link type="image/png" rel="shortcut icon" href="favicon.png" />
+</head>
+<body>
+    <h1>Load and repetitions for resistance training</h1>
+
+    <noscript>
+        <p>
+            Javascript is required for this application to work.<br>
+            <a href="https://support.google.com/answer/23852">Enable Javascript</a>
+        </p>
+    </noscript>
+
+    <p ng-hide="true">Loading...</p>
+
+    <section ng-controller="ResistanceTrainingController as controller" ng-cloak>
+
+        <!-- Table -->
+
+        <table ng-if="controller.data.isLoaded" class="numeric-table">
+            <tr>
+                <th>Load</th>
+                <th>RM</th>
+                <th ng-repeat="exercise in controller.data.exercises"><i>{{exercise.name}}</i></th>
+            </tr>
+            <tr ng-repeat="rm in controller.essentials.rmData">
+                <td ng-style="controller.background(rm.factor)">{{controller.percent(rm.factor)}} %</td>
+                <td>{{rm.reps}}</td>
+                <td ng-repeat="exercise in controller.data.exercises">{{(rm.factor == 1) ? exercise.rm1 : controller.mround(exercise.rm1 * rm.factor)}}</td>
+            </tr>
+        </table>
+        <br ng-if="controller.data.isLoaded">
+
+
+        <!-- Rationale -->
+
+        <details>
+            <summary>Rationale</summary>
+            <br>
+            <span ng-style="controller.background(0.9)">&nbsp;&bull;&nbsp;</span>&nbsp;Strength: Load 85-100 %, 1-6 repetitions, 2-6 sets.<br>
+            <span ng-style="controller.background(0.7)">&nbsp;&bull;&nbsp;</span>&nbsp;Hypertrophy: Load 67-85 %, 6-15 repetitions, 3-6 sets.<br>
+            Repetition Maximun (RM) data from <i>Essentials of strength training and conditioning</i>*.<br>
+            <br>
+            <small>*Haff, G., & Triplett, N. T. (2016). <i>Essentials of strength training and conditioning</i>. Fourth edition. Champaign, IL: Human Kinetics.</small>
+        </details>
+        <br>
+
+        <!-- 1RM Calculator -->
+
+        <details>
+            <summary>1RM Calculator</summary>
+            <br>
+            <label>Load:</label><br>
+            <input type="text" ng-model="controller.calculator.load" placeholder="Enter load here" ng-change="controller.calculatorChange()"><br>
+            <label>Repetitions:</label><br>
+            <input type="text" ng-model="controller.calculator.reps" placeholder="Enter repetitions here" ng-change="controller.calculatorChange()"><br>
+            <table ng-if="controller.calculatorHasValue()" class="numeric-table">
+                <tr>
+                    <th>Load</th>
+                    <th>RM</th>
+                    <th><i>Calculation</i></th>
+                </tr>
+                <tr ng-repeat="item in controller.calculator.rm">
+                    <td ng-style="controller.background(item.factor)">{{controller.percent(item.factor)}} %</td>
+                    <td>{{item.reps}}</td>
+                    <td>{{(item.factor == 1) ? item.load : controller.round(item.load)}}</td>
+                </tr>
+            </table>
+        </details>
+        <br>
+
+        <!-- Query -->
+
+        <details ng-open="!controller.data.isLoaded">
+            <summary>Query</summary>
+            <br>
+            <label>Exercises:</label><br>
+            <input type="text" ng-model="controller.query.exercises" placeholder="Enter comma separated exercises here" style="width: 100%;">
+            <label>1RM:</label><br>
+            <input type="text" ng-model="controller.query.rm1" placeholder="Enter comma separated 1RM values here" style="width: 100%;"><br>
+            <label>Precision:</label><br>
+            <select ng-model="controller.query.precision">
+                <option value="2.5">2.5</option>
+                <option value="1">1</option>
+                <option value="0.5">0.5</option>
+            </select><br>
+            <br>
+            <a href="javascript:void(0)" ng-click="controller.submit()">Submit</a><br>
+            Enter comma separated exercises and 1RM values, then press submit and add the new URL to your browser bookmarks.
+        </details>
+    </section>
+    <br>
+
+    <footer>
+        <small>
+            Copyright (c) 2019 Daniel Martínez Fernández<br>
+            MIT License
+        </small>
+    </footer>
+
+    <!-- Javascript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+    <script src="resistancetraining.js"></script>
+</body>
+</html>
+
+<!-- Acknowledges:
+    Web style: https://www.ibm.com/design/language/
+    AngularJS: https://coryrylan.com/blog/es2015-class-in-angularjs-controllers-and-services
+-->
