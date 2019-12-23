@@ -33,18 +33,6 @@
             }
             return load / this.rmData.find(rm => rm.reps == reps).factor;
         }
-        calcRMLoad(rm1) {
-            if (!(this._validateLoad(rm1))) {
-                return [];
-            }
-            return this.rmData.map((item) => {
-                return {
-                    factor: item.factor,
-                    reps: item.reps,
-                    load: item.factor * rm1
-                }
-            });
-        }
         _validateReps(reps) {
             return this.rmData.find(rm => rm.reps == reps) !== undefined;
         }
@@ -103,100 +91,39 @@
     'use strict';
 
     class ResistanceTrainingController {
+        #essentials;
         constructor(EssentialsService, DataService) {
             this.data = DataService;
-            this.essentials = EssentialsService;
+            this.#essentials = EssentialsService;
             this.calculator = {
                 load: null,
                 reps: null,
-                rm1: NaN,
-                rm: []
-            }
+                exercises: [{ name: 'Calculation', rm1: NaN }],
+                precision: 1
+            };
             this.query = {
-                exercises: null,
-                rm1: null,
-                precision: null
+                exercises: DataService.exercises.map(e => e.name).join(", "),
+                rm1: DataService.exercises.map(e => e.rm1).join(", "),
+                precision: DataService.precision.toString(),
+                submit: function () {
+                    let url = window.location.origin + window.location.pathname + "?exercises=" + this.exercises + "&1rm=" + this.rm1 + "&precision=" + this.precision;
+                    window.location = url;
+                }
             }
-
-            this.query.exercises = DataService.exercises.map(e => e.name).join(", ");
-            this.query.rm1 = DataService.exercises.map(e => e.rm1).join(", ");
-            this.query.precision = DataService.precision.toString();
         }
         calculatorChange() {
             if (!isNaN(this.calculator.load) && !isNaN(this.calculator.reps)) {
                 let parsedLoad = parseFloat(this.calculator.load);
                 let parsedReps = parseInt(this.calculator.reps);
-                this.calculator.rm1 = this.essentials.calc1RM(parsedLoad, parsedReps);
-
-                this.calculator.rm.length = 0;
-                let newRM = this.essentials.calcRMLoad(this.calculator.rm1);
-                for (let i = 0; i < newRM.length; i++) {
-                    this.calculator.rm.push({
-                        factor: newRM[i].factor,
-                        reps: newRM[i].reps,
-                        load: Math.round(newRM[i].load)
-                    });
-                }
+                let rm1 = this.#essentials.calc1RM(parsedLoad, parsedReps);
+                this.calculator.exercises[0].rm1 = rm1;
             }
             else {
-                this.calculator.rm1 = NaN;
-                this.calculator.rm.length = 0;
+                this.calculator.exercises[0].rm1 = NaN;
             }
         }
         calculatorHasValue() {
-            return !isNaN(this.calculator.rm1);
-        }
-        background(factor) {
-            if (factor > 0.85) {
-                return {
-                    'background-color': '#0043ce'
-                };
-            }
-            else if (factor == 0.85) {
-                return {
-                    'background-image': 'linear-gradient(#0043ce, #6929c4)'
-                };
-            }
-            else if (factor > 0.67) {
-                return {
-                    'background-color': '#6929c4'
-                };
-            }
-            else if (factor == 0.67) {
-                return {
-                    'background-image': 'linear-gradient(#6929c4, #21272a)'
-                };
-            }
-            else {
-                return {
-                    'background-color': '#21272a'
-                }
-            }
-        }
-        percent(factor) {
-            return Math.round(factor * 100)
-        }
-        mround(load) {
-            let x = Math.round(load / this.data.precision) * this.data.precision;
-            // Avoid floating-point rounding error.
-            let decimals = 0;
-            if (!Number.isInteger(this.data.precision)) {
-                decimals = (this.data.precision % 1).toString().length - 2;
-            }
-            x = parseFloat(x.toFixed(decimals));
-            return x;
-        }
-        round(load) {
-            if (this.data.precision >= 1.0) {
-                return Math.round(load);
-            }
-            else {
-                return this.mround(load);
-            }
-        }
-        submit() {
-            let url = window.location.origin + window.location.pathname + "?exercises=" + this.query.exercises + "&1rm=" + this.query.rm1 + "&precision=" + this.query.precision;
-            window.location = url;
+            return !isNaN(this.calculator.exercises[0].rm1);
         }
     }
     ResistanceTrainingController.$inject = ['EssentialsService', 'DataService'];

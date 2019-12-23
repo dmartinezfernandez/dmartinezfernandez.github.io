@@ -19,35 +19,25 @@
 
     <p ng-hide="true">Loading...</p>
 
+
+
     <section ng-controller="ResistanceTrainingController as controller" ng-cloak>
 
         <!-- Table -->
 
-        <table ng-if="controller.data.isLoaded" class="numeric-table">
-            <tr>
-                <th>Load</th>
-                <th>RM</th>
-                <th ng-repeat="exercise in controller.data.exercises"><i>{{exercise.name}}</i></th>
-            </tr>
-            <tr ng-repeat="rm in controller.essentials.rmData">
-                <td ng-style="controller.background(rm.factor)">{{controller.percent(rm.factor)}} %</td>
-                <td>{{rm.reps}}</td>
-                <td ng-repeat="exercise in controller.data.exercises">{{(rm.factor == 1) ? exercise.rm1 : controller.mround(exercise.rm1 * rm.factor)}}</td>
-            </tr>
-        </table>
+        <rm-table exercises="controller.data.exercises" precision="controller.data.precision" has-data="controller.data.isLoaded"></rm-table>
         <br ng-if="controller.data.isLoaded">
-
 
         <!-- Rationale -->
 
         <details>
             <summary>Rationale</summary>
             <br>
-            <span ng-style="controller.background(0.9)">&nbsp;&bull;&nbsp;</span>&nbsp;Strength: Load 85-100 %, 1-6 repetitions, 2-6 sets.<br>
-            <span ng-style="controller.background(0.7)">&nbsp;&bull;&nbsp;</span>&nbsp;Hypertrophy: Load 67-85 %, 6-15 repetitions, 3-6 sets.<br>
+            <span style="background-color: var(--strength-color)">&nbsp;&bull;&nbsp;</span>&nbsp;Strength: Load 85-100 %, 1-6 repetitions, 2-6 sets.<br>
+            <span style="background-color: var(--hypertrophy-color)">&nbsp;&bull;&nbsp;</span>&nbsp;Hypertrophy: Load 67-85 %, 6-15 repetitions, 3-6 sets.<br>
             Repetition Maximun (RM) data from <i>Essentials of strength training and conditioning</i>*.<br>
             <br>
-            <small>*Haff, G., & Triplett, N. T. (2016). <i>Essentials of strength training and conditioning</i>. Fourth edition. Champaign, IL: Human Kinetics.</small>
+            <small class="darker">*Haff, G., & Triplett, N. T. (2016). <i>Essentials of strength training and conditioning</i>. Fourth edition. Champaign, IL: Human Kinetics.</small>
         </details>
         <br>
 
@@ -60,18 +50,9 @@
             <input type="text" ng-model="controller.calculator.load" placeholder="Enter load here" ng-change="controller.calculatorChange()"><br>
             <label>Repetitions:</label><br>
             <input type="text" ng-model="controller.calculator.reps" placeholder="Enter repetitions here" ng-change="controller.calculatorChange()"><br>
-            <table ng-if="controller.calculatorHasValue()" class="numeric-table">
-                <tr>
-                    <th>Load</th>
-                    <th>RM</th>
-                    <th><i>Calculation</i></th>
-                </tr>
-                <tr ng-repeat="item in controller.calculator.rm">
-                    <td ng-style="controller.background(item.factor)">{{controller.percent(item.factor)}} %</td>
-                    <td>{{item.reps}}</td>
-                    <td>{{(item.factor == 1) ? item.load : controller.round(item.load)}}</td>
-                </tr>
-            </table>
+
+            <rm-table exercises="controller.calculator.exercises" precision="controller.calculator.precision" has-data="controller.calculatorHasValue()"></rm-table>
+
         </details>
         <br>
 
@@ -91,22 +72,22 @@
                 <option value="0.5">0.5</option>
             </select><br>
             <br>
-            <a href="javascript:void(0)" ng-click="controller.submit()">Submit</a><br>
+            <a href="javascript:void(0)" ng-click="controller.query.submit()">Submit</a><br>
             Enter comma separated exercises and 1RM values, then press submit and add the new URL to your browser bookmarks.
         </details>
     </section>
     <br>
 
     <footer>
-        <small>
-            Copyright (c) 2019 Daniel Martínez Fernández<br>
-            MIT License
+        <small class="darker">
+            Copyright &copy; 2019 Daniel Martínez Fernández. MIT License.
         </small>
     </footer>
 
     <!-- Javascript -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
     <script src="resistancetraining.js"></script>
+    <script src="resistanceTraining/rmTable.js"></script>
 </body>
 </html>
 

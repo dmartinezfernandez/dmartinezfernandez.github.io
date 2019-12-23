@@ -7,9 +7,18 @@ IBM colors (https://www.ibm.com/design/language/):
     13171a Cool Gray 100
     21272a Cool Gray 90
     4d5358 Cool Gray 70
+    878d96 Cool Gray 50
     b9bfc7 Cool Gray 30
 
 */
+
+:root {
+    /* resistanceTraining/rmTable.js */
+    --strength-color: #0043ce;
+    --hypertrophy-color: #6929c4;
+    --undefined-color: #21272a;
+}
+
 
 .ng-cloak {
     display: none !important;
@@ -20,7 +29,9 @@ html, input, select {
     background-color: #13171a /* Cool Gray 100 */;
     color: #b9bfc7 /* Cool Gray 30 */;
 }
-
+.darker {
+    color: #878d96; /* Cool Gray 50 */
+}
 h1, h2, h3 {
     font-weight: 300;
 }
