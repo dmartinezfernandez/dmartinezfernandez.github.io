@@ -1,9 +1,4 @@
-﻿"use strict";
-
-(function () {
-    angular.module('app', []);
-}());
-
+﻿
 (function () {
     'use strict';
 
@@ -91,10 +86,9 @@
     'use strict';
 
     class ResistanceTrainingController {
-        #essentials;
         constructor(EssentialsService, DataService) {
             this.data = DataService;
-            this.#essentials = EssentialsService;
+            this.essentials = EssentialsService;
             this.calculator = {
                 load: null,
                 reps: null,
@@ -115,7 +109,7 @@
             if (!isNaN(this.calculator.load) && !isNaN(this.calculator.reps)) {
                 let parsedLoad = parseFloat(this.calculator.load);
                 let parsedReps = parseInt(this.calculator.reps);
-                let rm1 = this.#essentials.calc1RM(parsedLoad, parsedReps);
+                let rm1 = this.essentials.calc1RM(parsedLoad, parsedReps);
                 this.calculator.exercises[0].rm1 = rm1;
             }
             else {
