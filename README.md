@@ -11,3 +11,7 @@ Japanese garden downloaded from http://getwallpapers.com/collection/japanese-gar
 - 1RM calculator.
 
 Reference: Haff, G., & Triplett, N. T. (2016). *Essentials of strength training and conditioning*. Fourth edition. Champaign, IL: Human Kinetics.
+
+## pregnancy
+
+- Due date calculator made with Vue 3.
