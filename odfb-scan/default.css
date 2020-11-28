@@ -1,0 +1,52 @@
+/*
+
+IBM colors (https://www.ibm.com/design/language/):
+    0043ce Blue 70
+    0f62fe Blue 60
+    97c1ff Blue 30
+    6929c4 Purple 70
+    13171a Cool Gray 100
+    21272a Cool Gray 90
+    343a3f Cool Gray 80
+    4d5358 Cool Gray 70
+    878d96 Cool Gray 50
+    b9bfc7 Cool Gray 30
+    dde1e6 Cool Gray 20
+    f2f4f8 Cool Gray 10
+
+*/
+
+html {
+  font-family: system-ui;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 300;
+}
+
+button,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+button {
+  background-color: #dde1e6; /* Cool Gray 20 */
+  border: 1px solid;
+  border-radius: 2px;
+}
+
+footer {
+  color: #4d5358; /* Cool Gray 70 */
+}
+
+a {
+  color: #0f62fe /* Blue 60 */;
+  text-decoration: unset;
+}
+
+a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
