@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Body Fat Calculator</title>
+
+    <style>/* IBM colors (https://www.ibm.com/design/language/) */
+
+        html, input, select {
+            font-family: system-ui;
+            background-color: #13171a /* Cool Gray 100 */;
+            color: #b9bfc7 /* Cool Gray 30 */;
+        }
+
+        .darker {
+            color: #878d96; /* Cool Gray 50 */
+        }
+
+        h1, h2, h3 {
+            font-weight: 300;
+        }
+
+        a {
+            color: #97c1ff /* Blue 30 */;
+            text-decoration: unset;
+        }
+
+            a:hover {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+        input {
+            border: none;
+        }
+    </style>
+
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+
+    <!-- Quickly Try JSX
+        The quickest way to try JSX in your project is to add this <script> tag to your page:
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        
+        Now you can use JSX in any <script> tag by adding type="text/babel" attribute to it. Here is an example HTML file with JSX that you can download and play with.
+        
+        This approach is fine for learning and creating simple demos. However, it makes your website slow and isn’t suitable for production. -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+</head>
+
+<body>
+    <h1>Body fat calculator using the Navy-seal formula</h1>
+
+    <noscript>
+        <p>
+            Javascript is required for this application to work.<br/>
+            <a href="https://support.google.com/answer/23852">Enable Javascript</a>
+        </p>
+    </noscript>
+
+    <!-- Body Fat Calculator -->
+    <section id="calculator">
+    </section>
+
+    <!-- Rationale -->
+    <details>
+        <summary>Rationale</summary>
+        <br />
+        The Navy-seal formula for males is 86.010 x log10 (abdomen - neck) - 70.041 x log10 (height) + 36.76 while
+        for females it is 163.205 x log10 (waist + hip - neck) - 97.684 x log10 (height) - 78.387. [Length unit:
+        inch.]<br />
+        <br />
+        Navy-seal formula and bioelectrical impedance are both simple and reliable instruments to measure body
+        composition in adults.<br />
+        <br />
+        <small class="darker">Reference: Shaheen A, Javed N, Azam F, et al. <a
+                href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6650177/">Comparison of Bioelectrical Impedance
+                and Navy Seal Formula to Measure Body Composition in Medical Students</a>. <i>Cureus</i>.
+            2019;11(5):e4723. Published 2019 May 22. doi:10.7759/cureus.4723</small>
+    </details>
+
+    <br/>
+
+    <footer>
+        <small class="darker">
+            Copyright &copy; 2021 Daniel Martínez Fernández. MIT License.
+        </small>
+    </footer>
+
+    <script type="text/babel">
+    "use strict";
+    
+    const { useState, useEffect } = React;
+    const CM = 'cm', IN = 'in', MALE = 'male', FEMALE = 'female';
+
+    function Calculator(props) {
+        const [data, setData] = useState({unit: props.unit || CM, gender: props.gender, height: props.height, waist: props.waist, hip: props.hip, bodyFat: undefined});
+        const toInches = (length, unit) => unit == CM ? length / 2.54 : length;
+        const computeBodyFat = (data) => {
+            let height = data.height, waist = data.waist, neck = data.neck, hip = data.hip;
+            if (data.unit == CM){
+                height = data.height / 2.54;
+                waist = data.waist / 2.54;
+                neck = data.neck / 2.54;
+                hip= data.hip / 2.54;
+            }
+            if (Boolean(data) && Boolean(data.height) && Boolean(data.waist) && Boolean(data.neck))  {
+                console.log(height, waist, neck, hip, data.gender, data.unit);
+                if (data.gender == FEMALE && Boolean(hip))
+                    data.bodyFat = 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(height) - 78.387;
+                else if (data.gender == MALE)
+                    data.bodyFat = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(height) + 36.76;
+                else
+                    data.bodyFat = undefined;
+                console.log(data.bodyFat);
+                return Boolean(data.bodyFat) && !isNaN(data.bodyFat) && data.bodyFat >= 0 && data.bodyFat <= 100;
+            }
+            else
+                return false;
+        }
+        const submit = (e) => {
+            e.preventDefault();
+            let url = window.location.origin + window.location.pathname +
+                "?gender=" + data.gender +
+                "&unit=" + data.unit +
+                "&height=" + data.height +
+                "&neck=" + data.neck +
+                "&waist=" + data.waist +
+                (data.gender == FEMALE ? "&hip=" + data.hip : null);
+            window.location = url;
+        }
+
+        const onUnitChange = (e, data) => {
+            const unit = e.target.value;
+            if (data.unit == CM && unit == IN) {
+                data.height = !isNaN(data.height) ? data.height / 2.54 : undefined;
+                data.neck = !isNaN(data.neck) ? data.neck / 2.54 : undefined;
+                data.waist = !isNaN(data.waist) ? data.waist / 2.54 : undefined;
+                data.hip = !isNaN(data.hip) ? data.hip / 2.54 : undefined;
+            }
+            else if (data.unit == IN && unit == CM) {
+                data.height = !isNaN(data.height) ? data.height * 2.54 : undefined;
+                data.neck = !isNaN(data.neck) ? data.neck * 2.54 : undefined;
+                data.waist = !isNaN(data.waist) ? data.waist * 2.54 : undefined;
+                data.hip = !isNaN(data.hip) ? data.hip * 2.54 : undefined;
+            }
+            data.unit = unit;
+            setData({...data});
+        }
+
+        return (
+            <div>
+                Length unit:<br/>
+                <label>
+                    <input type="radio" checked={data.unit == CM} name="unit" value={CM} onChange={e => onUnitChange(e, data)}/>
+                    Centimeter
+                </label>
+                <label>
+                    <input type="radio" checked={data.unit == IN} name="unit" value={IN} onChange={e => onUnitChange(e, data)}/>
+                    Inch
+                </label>
+                <br/>
+                Gender:<br/>
+                <label>
+                    <input type="radio" checked={data.gender == MALE} name="gender" value={MALE} onChange={e => setData({ ...data, gender: e.target.value})}/> Male
+                </label>
+                <label>
+                    <input type="radio" checked={data.gender == FEMALE} name="gender" value= {FEMALE} onChange={e => setData({ ...data, gender: e.target.value})}/> Female
+                </label>
+                <br/>
+                <label>
+                    Height:<br/>
+                    <input type="text" value={data.height} placeholder="Enter height here" onChange={e => setData({...data, height: e.target.value})}/>
+                </label>
+                <br/>
+                <label>
+                    Neck:<br/>
+                    <input type="text" value={data.neck} placeholder="Enter neck here" onChange={e => setData({ ...data, neck: e.target.value })}/>
+                </label><br/>
+                <label>
+                    Waist:<br/>
+                        <input type="text" value={data.waist} placeholder="Enter waist here" onChange={e => setData({ ...data, waist: e.target.value })}/>
+                </label><br/>
+                {
+                    data.gender == FEMALE &&
+                    <label>
+                        Hip:<br />
+                        <input type="text" value={data.hip} placeholder="Enter waist here" onChange={e => setData({ ...data, hip: e.target.value })}/><br />
+                    </label>
+                }
+                {
+                    computeBodyFat(data) && 
+                    <label>Body Fat Ratio: {data.bodyFat && data.bodyFat.toFixed(0)} %<br />
+                    </label>
+                }
+
+                <br />
+                <div ng-if="controller.bodyFatIsValid()">
+                    <a href="." onClick={e => submit(e)}>Submit</a><br />
+                    Click submit and add the new URL to your browser bookmarks.<br />
+                    <br />
+                </div>
+
+            </div>
+        );
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    let unit, gender, height, neck, waist, hip;
+    if (params.has('gender')) {
+        let param = params.get('gender');
+        if (param == MALE || param == FEMALE)
+            gender = param;
+    }
+    if (params.has("unit")) {
+        let param = params.get("unit").toLowerCase();
+        if (param == CM || param == IN)
+            unit = param;
+    }
+    else {
+        unit = CM;
+    }
+    if (params.has("height")) {
+        let param = params.get("height");
+        if (!isNaN(param))
+            height = Number(param);
+    }
+    if (params.has("neck")) {
+        let param = params.get("neck");
+        if (!isNaN(param))
+            neck = Number(param);
+    }
+    if (params.has("waist")) {
+        let param = params.get("waist");
+        if (!isNaN(param))
+            waist = Number(param);
+    }
+    if (params.has("hip")) {
+        let param = params.get("hip");
+        if (!isNaN(param))
+            hip = Number(param);
+    }
+    console.log(unit, gender, height, neck, waist, hip, params);
+
+    ReactDOM.render(
+        <Calculator unit={unit} gender={gender} height={height} neck={neck} waist={waist} hip={hip}/>,
+        document.querySelector('#calculator')
+    );
+
+
+    /*
+    
+            (function () {
+                angular.module('app', []);
+            }());
+    
+    
+            (function () {
+                'use strict';
+    
+                class BodyFatController {
+                    constructor() {
+                        let params = new URLSearchParams(window.location.search);
+                        if (params.has('gender')) {
+                            let param = params.get('gender');
+                            if (param == "male" || param == "female")
+                                this.gender = param;
+                        }
+                        if (params.has("unit")) {
+                            let param = params.get("unit").toLowerCase();
+                            if (param == "cm" || param == "in")
+                                this.unit = param;
+                        }
+                        else {
+                            this.unit = "cm";
+                        }
+                        if (params.has("height")) {
+                            let param = params.get("height");
+                            if (!isNaN(param))
+                                this.height = Number(param);
+                        }
+                        if (params.has("neck")) {
+                            let param = params.get("neck");
+                            if (!isNaN(param))
+                                this.neck = Number(param);
+                        }
+                        if (params.has("waist")) {
+                            let param = params.get("waist");
+                            if (!isNaN(param))
+                                this.waist = Number(param);
+                        }
+                        if (params.has("hip")) {
+                            let param = params.get("hip");
+                            if (!isNaN(param))
+                                this.hip = Number(param);
+                        }
+                        this.change();
+                    }
+                    toInches(length) {
+                        return this.unit == "cm" ? length / 2.54 : length;
+                    }
+                    isMale() {
+                        return this.gender == 'male';
+                    }
+                    isFemale() {
+                        return this.gender == 'female';
+                    }
+                    change() {
+                        if (this.isFemale())
+                            this.bodyFat = 163.205 * Math.log10((this.toInches(this.waist + this.hip - this.neck))) - 97.684 * Math.log10(this.toInches(this.height)) - 78.387;
+                        else if (this.isMale())
+                            this.bodyFat = 86.010 * Math.log10(this.toInches(this.waist - this.neck)) - 70.041 * Math.log10(this.toInches(this.height)) + 36.76;
+                        else
+                            this.bodyFat = undefined;
+                    }
+                    bodyFatIsValid() {
+                        return this.bodyFat != null && !isNaN(this.bodyFat) && this.bodyFat >= 0 && this.bodyFat <= 100;
+                    }
+                    submit() {
+                        console.log("submit()");
+                        let url = window.location.origin + window.location.pathname +
+                            "?gender=" + this.gender +
+                            "&unit=" + this.unit +
+                            "&height=" + this.height +
+                            "&neck=" + this.neck +
+                            "&waist=" + this.waist +
+                            (this.isFemale() ? "&hip=" + this.hip : "");
+                        window.location = url;
+                    }
+                }
+                angular.module('app').controller('BodyFatController', BodyFatController);
+            }());
+            */
+    </script>
+</body>
+
+</html>
