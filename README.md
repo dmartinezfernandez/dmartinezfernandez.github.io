@@ -12,7 +12,7 @@ Japanese garden downloaded from http://getwallpapers.com/collection/japanese-gar
 
 - Body fat calculator made with React.
 
-## fitness/resistancetraining.html
+## fitness
 
 - Load and repetitions for resistance training.
 - 1RM calculator.
