@@ -12,6 +12,10 @@ Japanese garden downloaded from http://getwallpapers.com/collection/japanese-gar
 
 - Body fat calculator made with React.
 
+## due-date
+
+- Due date calculator made with Vue 3 beta.
+
 ## fitness
 
 - Load and repetitions for resistance training.
@@ -22,7 +26,3 @@ Reference: Haff, G., & Triplett, N. T. (2016). _Essentials of strength training 
 ## odbf-scan
 
 - One Drive for Business Scan. Search for missing hash and duplicate files.
-
-## pregnancy
-
-- Due date calculator made with Vue 3.
