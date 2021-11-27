@@ -6,15 +6,15 @@ Japanese garden downloaded from http://getwallpapers.com/collection/japanese-gar
 
 ## 8-puzzle
 
-- 8-puzzle game made with Vue 3.
+- [8-puzzle](https://github.com/dmartinezfernandez/8-puzzle) game made with Vue 3.
 
 ## body-fat
 
-- Body fat calculator made with React.
+- [Body fat](https://github.com/dmartinezfernandez/body-fat) calculator made with React.
 
 ## due-date
 
-- Due date calculator made with Vue 3 beta.
+- [Due date](https://github.com/dmartinezfernandez/due-date) calculator made with Vue 3 beta.
 
 ## fitness
 
