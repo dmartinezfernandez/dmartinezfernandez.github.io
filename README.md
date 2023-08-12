@@ -6,7 +6,7 @@ Japanese garden downloaded from http://getwallpapers.com/collection/japanese-gar
 
 ## 8-puzzle
 
-[8-puzzle](https://github.com/dmartinezfernandez/8-puzzle) game made with Vue 3.
+[8-puzzle](https://github.com/dmartinezfernandez/8-puzzle) game made with React.
 
 ## body-fat
 
