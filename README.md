@@ -16,10 +16,6 @@ Japanese garden downloaded from http://getwallpapers.com/collection/japanese-gar
 
 [Due date](https://github.com/dmartinezfernandez/due-date) calculator made with Vue 3 beta.
 
-## odbf-scan
-
-One Drive for Business Scan. Search for missing hash and duplicate files.
-
 ## resistance-training
 
 [Load and repetitions for resistance training](https://github.com/dmartinezfernandez/resistance-training), RM calculator made with React.
